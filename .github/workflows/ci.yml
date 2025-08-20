@@ -1,0 +1,41 @@
+name: Mobile Automation CI
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Upload APK to BrowserStack
+        id: upload_app
+        run: |
+          response=$(curl --fail -u "$BROWSERSTACK_USERNAME:$BROWSERSTACK_ACCESS_KEY" \
+            -X POST "https://api-cloud.browserstack.com/app-automate/upload" \
+            -F "file=@./app/android/android.wdio.native.app.v1.0.8.apk")
+          
+          echo "API Response: $response"
+          app_url=$(echo $response | jq -r '.app_url')
+          echo "APP_URL=$app_url" >> $GITHUB_ENV
+        env:
+          BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
+          BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
+
+      - name: Run Tests
+        run: npm test
+
+      - name: Generate Report
+        run: npm run report
