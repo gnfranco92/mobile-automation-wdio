@@ -18,8 +18,8 @@ Antes de iniciar, certifique-se de ter os seguintes requisitos instalados:
 1️⃣ **Clone o repositório**
 
 ```sh
-git clone https://github.com/SEU_USUARIO/mobile-automation-webdriverio.git
-cd mobile-automation-webdriverio
+git clone https://github.com/gnfranco92/mobile-automation-wdio.git
+cd mobile-automation-wdio
 ```
 
 2️⃣ **Instale as dependências**
